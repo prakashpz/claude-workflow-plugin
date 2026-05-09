@@ -1,0 +1,16 @@
+{
+  "name": "agdata-corp-workflows",
+  "owner": {
+    "name": "AGData",
+    "email": "Jared.Munn@agdata.com",
+    "url": "https://github.com/agdata-corp"
+  },
+  "plugins": [
+    {
+      "name": "claude-workflow",
+      "source": "./",
+      "description": "Set up and manage Claude Workflow System in your projects - provides structured development workflows, AI agents, and CI/CD integration",
+      "version": "1.2.0"
+    }
+  ]
+}

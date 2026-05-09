@@ -1,0 +1,11 @@
+{
+  "name": "claude-workflow",
+  "description": "Set up and manage Claude Workflow System - structured development workflows, agents, and CI/CD integration for any project",
+  "version": "1.2.0",
+  "author": {
+    "name": "AGData"
+  },
+  "homepage": "https://github.com/prakashpz/claude-workflow-plugin",
+  "repository": "https://github.com/prakashpz/claude-workflow-plugin",
+  "license": "Apache-2.0"
+}
