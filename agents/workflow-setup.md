@@ -78,6 +78,36 @@ Use detected tools to customize:
 - Test commands
 - Lint configurations
 
+## Integration Detection
+
+Before generating configuration, detect which integrations the user is likely using:
+
+### Detecting Jira/Confluence (Atlassian)
+
+Indicators that Atlassian tools are in use:
+- `.jira` or `jira.json` config files in the project root
+- References to `atlassian.net` in any config files
+- Existing `.claude/settings.json` with a `jira` or `confluence` key
+- User explicitly selects Jira or Confluence during setup
+
+When Atlassian tools are detected or chosen:
+- Set `projectMetadata.jira` with `baseUrl` and `projectKey`
+- Set `projectMetadata.confluence` with `baseUrl`, `spaceKey`, and `pageId`
+- Note in output: Jira and Confluence use the **Atlassian MCP** (single MCP for both)
+
+### Detecting Linear
+
+Indicators that Linear is in use:
+- `.linear` config files or `linear.json`
+- Existing `.claude/settings.json` with a `linear` key
+- User explicitly selects Linear during setup
+
+### Detecting Coda
+
+Indicators that Coda is in use:
+- Existing `.claude/settings.json` with a `coda` key
+- User explicitly selects Coda during setup
+
 ## Configuration Generation
 
 Based on analysis, generate `.claude/settings.json`:
@@ -105,9 +135,27 @@ Based on analysis, generate `.claude/settings.json`:
     "language": "typescript",
     "testing": "jest",
     "styling": "tailwind"
+  },
+  "projectMetadata": {
+    "jira": {
+      "baseUrl": "https://your-org.atlassian.net",
+      "projectKey": "PROJ",
+      "projectName": ""
+    },
+    "confluence": {
+      "baseUrl": "https://your-org.atlassian.net/wiki",
+      "spaceKey": "SPACE",
+      "pageId": "",
+      "pageName": ""
+    },
+    "linear": {},
+    "coda": {},
+    "github": {}
   }
 }
 ```
+
+Only populate the keys the user has configured. Omit or leave empty keys for integrations that were skipped.
 
 ## Base Exclusion Logic
 

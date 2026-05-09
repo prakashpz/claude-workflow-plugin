@@ -286,7 +286,7 @@ This project uses the **{variant_name}** variant. When performing coding tasks:
 
 ### Step 7: Configure Project Integrations
 
-Now configure project-specific integrations for Linear, Coda, and GitHub.
+Now configure project-specific integrations for task management, documentation, and GitHub.
 
 #### GitHub (Auto-detect):
 ```bash
@@ -294,9 +294,10 @@ git remote get-url origin 2>/dev/null || echo "No remote"
 ```
 If a GitHub remote is detected, extract owner/repo and store in settings.
 
-#### Linear Integration:
+#### Task Management Integration:
 Ask the user using AskUserQuestion:
 - **Configure Linear**: Set up Linear project for issue tracking
+- **Configure Jira**: Set up Jira project for issue tracking
 - **Skip for now**: Configure later with /SetupProjectMeta
 
 If configuring Linear:
@@ -304,11 +305,18 @@ If configuring Linear:
 2. Let user select team
 3. Use Linear MCP to list projects in that team
 4. Let user select or create project
-5. Store team and project IDs in settings
+5. Store team and project IDs in settings under `linear`
 
-#### Coda Integration:
+If configuring Jira:
+1. Use Atlassian MCP to list available projects via `mcp__atlassian__getVisibleJiraProjects`
+2. Let user select project
+3. Ask for Jira base URL (e.g., https://your-org.atlassian.net)
+4. Store project key, project name, and base URL in settings under `jira`
+
+#### Documentation Integration:
 Ask the user using AskUserQuestion:
 - **Configure Coda**: Set up Coda document for requirements
+- **Configure Confluence**: Set up Confluence space for requirements
 - **Skip for now**: Configure later with /SetupProjectMeta
 
 If configuring Coda:
@@ -316,7 +324,15 @@ If configuring Coda:
 2. Let user select document
 3. Use Coda MCP to list pages
 4. Let user select or create requirements page
-5. Store document and page IDs in settings
+5. Store document and page IDs in settings under `coda`
+
+If configuring Confluence:
+1. Use Atlassian MCP to list available spaces via `mcp__atlassian__getConfluenceSpaces`
+2. Let user select space
+3. Use Atlassian MCP to list pages in space via `mcp__atlassian__getPagesInConfluenceSpace`
+4. Let user select or identify requirements page
+5. Ask for Confluence base URL (e.g., https://your-org.atlassian.net/wiki)
+6. Store space key, page ID, and base URL in settings under `confluence`
 
 Update `.claude/settings.json` with the `projectMetadata` section:
 ```json
@@ -328,9 +344,20 @@ Update `.claude/settings.json` with the `projectMetadata` section:
       "projectId": "...",
       "projectName": "..."
     },
+    "jira": {
+      "baseUrl": "https://your-org.atlassian.net",
+      "projectKey": "PROJ",
+      "projectName": "..."
+    },
     "coda": {
       "docId": "...",
       "docName": "...",
+      "pageId": "...",
+      "pageName": "..."
+    },
+    "confluence": {
+      "baseUrl": "https://your-org.atlassian.net/wiki",
+      "spaceKey": "SPACE",
       "pageId": "...",
       "pageName": "..."
     },
@@ -342,6 +369,8 @@ Update `.claude/settings.json` with the `projectMetadata` section:
   }
 }
 ```
+
+Only the keys for configured integrations are written; unconfigured ones are omitted or left empty.
 
 If MCP servers are not available, inform user they can configure later with `/SetupProjectMeta`.
 
@@ -361,7 +390,9 @@ Provide a summary to the user:
 3. **Project integrations**: Show configured integrations status
    - GitHub: ✓ Configured (owner/repo) or ○ Not configured
    - Linear: ✓ Configured (team/project) or ○ Not configured
+   - Jira: ✓ Configured (project key) or ○ Not configured
    - Coda: ✓ Configured (doc/page) or ○ Not configured
+   - Confluence: ✓ Configured (space/page) or ○ Not configured
 4. **Next steps**:
    - Review and customize `CLAUDE.md`
    - Add `ANTHROPIC_API_KEY` to GitHub secrets for CI workflows
